@@ -16,14 +16,13 @@ Route::post('/login', LoginController::class);
 Route::get('/logout', LogoutController::class)->middleware('auth:sanctum');
 Route::get('/verifytoken', VerifirytokenController::class)->middleware('auth:sanctum');
 
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
-
 Route::middleware(['auth:sanctum'])->group(function () {
 
     // profile
-    Route::get('/profile/me', [UserController::class, 'me']);
+    Route::prefix('profile')->group(function() {
+        Route::patch('/update/{id}', [UserController::class, 'update']);
+        Route::get('/me', [UserController::class, 'me']);
+    });
 
     // modul
     Route::prefix('modul')->group(function() {
@@ -32,16 +31,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
         Route::get('/read', [ModulController::class, 'read']);
         Route::post('/create', [ModulController::class, 'create']);
-        Route::patch('/update', [ModulController::class, 'update']);
-        Route::delete('/delete', [ModulController::class, 'delete']);
+        Route::patch('/update/{id}', [ModulController::class, 'update']);
+        Route::delete('/delete/{id}', [ModulController::class, 'delete']);
     });
 
     // sub modul
     Route::prefix('submodul')->group(function() {
         Route::get('/read', [SubModulController::class, 'read']);
         Route::post('/create', [SubModulController::class, 'create']);
-        Route::patch('/update', [SubModulController::class, 'update']);
-        Route::delete('/delete', [SubModulController::class, 'delete']);
+        Route::patch('/update/{id}', [SubModulController::class, 'update']);
+        Route::delete('/delete/{id}', [SubModulController::class, 'delete']);
     });
+
+    // quiz
+    
+
 
 });

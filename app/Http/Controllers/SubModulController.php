@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\SubModul;
 use Illuminate\Http\Request;
+use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Storage;
 
 class SubModulController extends Controller
@@ -31,9 +32,29 @@ class SubModulController extends Controller
             'word' => 'nullable|file|mimes:doc,docx',
         ]);
 
-        $pptPath = $request->file('ppt') ? $request->file('ppt')->store('files/ppt') : null;
-        $pdfPath = $request->file('pdf') ? $request->file('pdf')->store('files/pdf') : null;
-        $wordPath = $request->file('word') ? $request->file('word')->store('files/word') : null;
+        $pptPath = null;
+        if ($request->hasFile('ppt')) {
+            $file = $request->file('ppt');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('submodul')->putFileAs('ppt', $file, $newName);
+            $pptPath = $newName;
+        }
+
+        $pdfPath = null;
+        if ($request->hasFile('pdf')) {
+            $file = $request->file('pdf');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('submodul')->putFileAs('pdf', $file, $newName);
+            $pdfPath = $newName;
+        }
+
+        $wordPath = null;
+        if ($request->hasFile('word')) {
+            $file = $request->file('word');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('submodul')->putFileAs('word', $file, $newName);
+            $wordPath = $newName;
+        }
 
         $subModul = SubModul::create([
             'modul_id' => $request->modul_id,
@@ -79,23 +100,32 @@ class SubModulController extends Controller
 
         if ($request->hasFile('ppt')) {
             if ($subModul->ppt) {
-                Storage::delete($subModul->ppt);
+                Storage::disk('submodul')->delete('ppt/' . $subModul->ppt);
             }
-            $subModul->ppt = $request->file('ppt')->store('files/ppt');
+            $file = $request->file('ppt');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('submodul')->putFileAs('ppt', $file, $newName);
+            $subModul->ppt = $newName;
         }
 
         if ($request->hasFile('pdf')) {
             if ($subModul->pdf) {
-                Storage::delete($subModul->pdf);
+                Storage::disk('submodul')->delete('pdf/' . $subModul->pdf);
             }
-            $subModul->pdf = $request->file('pdf')->store('files/pdf');
+            $file = $request->file('pdf');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('submodul')->putFileAs('pdf', $file, $newName);
+            $subModul->pdf = $newName;
         }
 
         if ($request->hasFile('word')) {
             if ($subModul->word) {
-                Storage::delete($subModul->word);
+                Storage::disk('submodul')->delete('word/' . $subModul->word);
             }
-            $subModul->word = $request->file('word')->store('files/word');
+            $file = $request->file('word');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('submodul')->putFileAs('word', $file, $newName);
+            $subModul->word = $newName;
         }
 
         $subModul->update([
@@ -112,20 +142,20 @@ class SubModulController extends Controller
     }
 
     // Remove the specified resource from storage.
-    public function destroy($id)
+    public function delete($id)
     {
         $subModul = SubModul::findOrFail($id);
 
         if ($subModul->ppt) {
-            Storage::delete($subModul->ppt);
+            Storage::disk('submodul')->delete('ppt/' . $subModul->ppt);
         }
 
         if ($subModul->pdf) {
-            Storage::delete($subModul->pdf);
+            Storage::disk('submodul')->delete('pdf/' . $subModul->pdf);
         }
 
         if ($subModul->word) {
-            Storage::delete($subModul->word);
+            Storage::disk('submodul')->delete('word/' . $subModul->word);
         }
 
         $subModul->delete();

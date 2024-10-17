@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('roles')->default('user');
+            $table->string('photo_profile')->nullable();
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();

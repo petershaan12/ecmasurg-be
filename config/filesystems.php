@@ -33,7 +33,7 @@ return [
         'local' => [
             'driver' => 'local',
             'root' => storage_path('app'),
-            // 'serve' => true,
+            'serve' => true,
             'throw' => false,
         ],
 
@@ -44,12 +44,14 @@ return [
             'visibility' => 'public',
             'throw' => false,
         ],
-        
-        'modul' => [
+
+        // 'root' => public_path('images'),
+        'submodul' => [
             'driver' => 'local',
-            'root' => storage_path('app/public/modul'),
-            'url' => env('APP_URL').'/storage/modul',
+            'root' => public_path('files'),
+            'url' => env('APP_URL').'',
             'visibility' => 'public',
+            'throw' => false,
         ],
 
         's3' => [

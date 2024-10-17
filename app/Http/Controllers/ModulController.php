@@ -31,7 +31,13 @@ class ModulController extends Controller
             'description' => 'required'
         ]);
 
-        $gambarModulPath = $request->file('gambar_modul') ? $request->file('gambar_modul')->store('images/modul') : null;
+        $gambarModulPath = null;
+        if ($request->hasFile('gambar_modul')) {
+            $file = $request->file('gambar_modul');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('modul', $file, $newName);
+            $gambarModulPath = $newName;
+        }
 
         $modul = Modul::create([
             'user_id' => $request->user_id,
@@ -62,27 +68,35 @@ class ModulController extends Controller
 
         if ($request->hasFile('gambar_modul')) {
             if ($modul->gambar_modul) {
-                Storage::delete($modul->gambar_modul);
+                Storage::disk('public')->delete('modul/' . $modul->gambar_modul);
             }
-            $modul->gambar_modul = $request->file('gambar_modul')->store('images/modul');
+            $file = $request->file('gambar_modul');
+            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
+            Storage::disk('public')->putFileAs('modul', $file, $newName);
+            $modul->gambar_modul = $newName;
         }
+
 
         $modul->update([
             'user_id' => $request->user_id,
             'asignd_teacher' => $request->asignd_teacher,
             'judul' => $request->judul,
             'description' => $request->description,
+            'gambar_modul' => $modul->gambar_modul,
         ]);
 
-        return response()->json(['message' => 'Modul updated successfully', 'data' => $modul]);
+        return response()->json([
+            'message' => 'Modul updated successfully',
+            'data' => $modul
+        ], 201);
     }
 
-    public function delete( $id)
+    public function delete($id)
     {
         $modul = Modul::findOrFail($id);
 
         if ($modul->gambar_modul) {
-            Storage::delete($modul->gambar_modul);
+            Storage::disk('public')->delete('modul/' . $modul->gambar_modul);
         }
 
         $modul->delete();
