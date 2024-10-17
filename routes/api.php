@@ -3,6 +3,7 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+use App\Http\Middleware\EnsureisTeacher;
 use App\Http\Controllers\ModulController;
 use App\Http\Controllers\SubModulController;
 use App\Http\Controllers\Auth\LoginController;
@@ -27,24 +28,24 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // modul
     Route::prefix('modul')->group(function() {
         // route for asign teacher
-        Route::get('/asignteacher', [ModulController::class, 'asignteacher']);
+        Route::get('/asignteacher', [ModulController::class, 'asignteacher'])->middleware([EnsureisTeacher::class]);
 
         Route::get('/read', [ModulController::class, 'read']);
-        Route::post('/create', [ModulController::class, 'create']);
-        Route::patch('/update/{id}', [ModulController::class, 'update']);
-        Route::delete('/delete/{id}', [ModulController::class, 'delete']);
+        Route::post('/create', [ModulController::class, 'create'])->middleware([EnsureisTeacher::class]);
+        Route::patch('/update/{id}', [ModulController::class, 'update'])->middleware([EnsureisTeacher::class]);
+        Route::delete('/delete/{id}', [ModulController::class, 'delete'])->middleware([EnsureisTeacher::class]);
     });
 
     // sub modul
     Route::prefix('submodul')->group(function() {
         Route::get('/read', [SubModulController::class, 'read']);
-        Route::post('/create', [SubModulController::class, 'create']);
-        Route::patch('/update/{id}', [SubModulController::class, 'update']);
-        Route::delete('/delete/{id}', [SubModulController::class, 'delete']);
+        Route::post('/create', [SubModulController::class, 'create'])->middleware([EnsureisTeacher::class]);
+        Route::patch('/update/{id}', [SubModulController::class, 'update'])->middleware([EnsureisTeacher::class]);
+        Route::delete('/delete/{id}', [SubModulController::class, 'delete'])->middleware([EnsureisTeacher::class]);
     });
 
     // quiz
-    
+
 
 
 });
