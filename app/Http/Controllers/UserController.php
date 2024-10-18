@@ -31,6 +31,13 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|email',
+            'gender' => 'required|string|max:255',
+            'biografi' => 'required',
+            'phone_number' => 'required|string|max:100',
+            'facebook' => 'required|string|max:255',
+            'youtube' => 'required|string|max:255',
+            'instagram' => 'required|string|max:255',
+            'point' => 'required|integer',
             'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -38,6 +45,13 @@ class UserController extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
+        $user->gender = $request->gender;
+        $user->biografi = $request->biografi;
+        $user->phone_number = $request->phone_number;
+        $user->facebook = $request->facebook;
+        $user->youtube = $request->youtube;
+        $user->instagram = $request->instagram;
+        $user->point = $request->point;
 
         if ($request->hasFile('photo_profile')) {
             if ($user->photo_profile) {

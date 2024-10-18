@@ -23,6 +23,7 @@ return new class extends Migration
             $table->string('facebook')->nullable();
             $table->string('youtube')->nullable();
             $table->string('instagram')->nullable();
+            $table->integer('point')->nullable();
             $table->string('photo_profile')->nullable();
             $table->rememberToken();
             $table->timestamps();
