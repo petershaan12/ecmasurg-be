@@ -34,10 +34,10 @@ class UserController extends Controller
             'gender' => 'required|string|max:255',
             'biografi' => 'required',
             'phone_number' => 'required|string|max:100',
-            'facebook' => 'required|string|max:255',
-            'youtube' => 'required|string|max:255',
-            'instagram' => 'required|string|max:255',
-            'point' => 'required|integer',
+            'dateof_birth' => 'required|date',
+            'facebook' => 'nullable|string|max:255',
+            'youtube' => 'nullable|string|max:255',
+            'instagram' => 'nullable|string|max:255',
             'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -51,7 +51,6 @@ class UserController extends Controller
         $user->facebook = $request->facebook;
         $user->youtube = $request->youtube;
         $user->instagram = $request->instagram;
-        $user->point = $request->point;
 
         if ($request->hasFile('photo_profile')) {
             if ($user->photo_profile) {
