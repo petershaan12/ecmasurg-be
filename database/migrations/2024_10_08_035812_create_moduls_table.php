@@ -13,7 +13,6 @@ return new class extends Migration
     {
         Schema::create('moduls', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('user_id');
             $table->unsignedBigInteger('asignd_teacher');
             $table->string('judul');
             $table->string('gambar_modul')->nullable();
@@ -21,7 +20,6 @@ return new class extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->foreign('asignd_teacher')->references('id')->on('users')->onDelete('cascade');
         });
     }

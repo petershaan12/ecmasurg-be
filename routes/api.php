@@ -34,6 +34,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::post('/create', [ModulController::class, 'create'])->middleware([EnsureisTeacher::class]);
         Route::patch('/update/{id}', [ModulController::class, 'update'])->middleware([EnsureisTeacher::class]);
         Route::delete('/delete/{id}', [ModulController::class, 'delete'])->middleware([EnsureisTeacher::class]);
+        Route::get('/show/{id}', [ModulController::class, 'showDetail']);
     });
 
     // sub modul
@@ -44,7 +45,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/delete/{id}', [SubModulController::class, 'delete'])->middleware([EnsureisTeacher::class]);
     });
 
-    // quiz
 
 
 

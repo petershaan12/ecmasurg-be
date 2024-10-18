@@ -12,7 +12,7 @@ class ModulController extends Controller
 {
     public function read()
     {
-        $allModul = Modul::with(['user'])->get();
+        $allModul = Modul::with(['assignedTeacher'])->get();
 
         return response([
             'message' => 'Succesfull get all modul',
@@ -112,6 +112,16 @@ class ModulController extends Controller
         return response([
             'message' => 'Succesfull get all teachers',
             'data' => $teachers
+        ], 200);
+    }
+
+    public function showDetail($id)
+    {
+        $modul = Modul::with(['user', 'assignedTeacher'])->findOrFail($id);
+
+        return response([
+            'message' => 'Succesfull get modul detail',
+            'data' => $modul
         ], 200);
     }
 }

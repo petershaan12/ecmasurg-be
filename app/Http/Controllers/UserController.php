@@ -31,7 +31,6 @@ class UserController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|string|email|max:255|email',
-            'roles' => 'required|string',
             'photo_profile' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
         ]);
 
@@ -39,7 +38,6 @@ class UserController extends Controller
 
         $user->name = $request->name;
         $user->email = $request->email;
-        $user->roles = $request->roles;
 
         if ($request->hasFile('photo_profile')) {
             if ($user->photo_profile) {
