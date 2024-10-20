@@ -11,7 +11,6 @@ class Modul extends Model
     use HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'user_id',
         'asignd_teacher',
         'judul',
         'gambar_modul',

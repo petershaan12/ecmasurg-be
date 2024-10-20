@@ -24,8 +24,7 @@ class ModulController extends Controller
     {
         // Validasi input
         $request->validate([
-            'user_id' => 'required|exists:users,id',
-            'asignd_teacher' => 'required|exists:users,id',
+            'asignd_teacher' => 'required',
             'judul' => 'required|max:255',
             'gambar_modul' => 'nullable|mimes:jpg,bmp,png|max:2048', // Batasan ukuran file 2MB
             'description' => 'required'
@@ -40,7 +39,6 @@ class ModulController extends Controller
         }
 
         $modul = Modul::create([
-            'user_id' => $request->user_id,
             'asignd_teacher' => $request->asignd_teacher,
             'judul' => $request->judul,
             'gambar_modul' => $gambarModulPath,
@@ -57,7 +55,6 @@ class ModulController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'user_id' => 'required|exists:users,id',
             'asignd_teacher' => 'required|exists:users,id',
             'judul' => 'required|string',
             'gambar_modul' => 'nullable|image|mimes:jpeg,png,jpg,gif,svg|max:2048',
@@ -78,7 +75,6 @@ class ModulController extends Controller
 
 
         $modul->update([
-            'user_id' => $request->user_id,
             'asignd_teacher' => $request->asignd_teacher,
             'judul' => $request->judul,
             'description' => $request->description,
