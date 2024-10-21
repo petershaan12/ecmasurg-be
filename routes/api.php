@@ -11,7 +11,7 @@ use App\Http\Controllers\Auth\LogoutController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\TaskCollectionController;
 use App\Http\Controllers\Auth\VerifirytokenController;
-
+use App\Http\Controllers\StudiKasusController;
 
 Route::post('/register', RegisterController::class);
 Route::post('/login', LoginController::class);
@@ -30,6 +30,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::prefix('modul')->group(function() {
         // route for asign teacher
         Route::get('/asignteacher', [ModulController::class, 'asignteacher'])->middleware([EnsureisTeacher::class]);
+        Route::get('/getmymodul/{id}', [ModulController::class, 'getmymodul'])->middleware([EnsureisTeacher::class]);
 
         Route::get('/', [ModulController::class, 'index']);
         Route::post('/create', [ModulController::class, 'create'])->middleware([EnsureisTeacher::class]);
@@ -50,9 +51,20 @@ Route::middleware(['auth:sanctum'])->group(function () {
             // task collection
             Route::prefix('task/{submodul_id}')->group(function() {
                 Route::get('/', [TaskCollectionController::class, 'index']);
+                Route::get('/show/{user_id}', [TaskCollectionController::class, 'show']);
                 Route::post('/create', [TaskCollectionController::class, 'create']);
                 Route::patch('/update/{task_id}', [TaskCollectionController::class, 'update']);
+                Route::delete('/delete/{task_id}', [TaskCollectionController::class, 'delete']);
             });
+        });
+
+        // evaluasi
+        Route::prefix('evaluasi/{modul_id}')->group(function() {
+            Route::get('/', [ModulController::class, 'index']);
+            Route::get('/show/{evaluasi_id}', [ModulController::class, 'showEvaluasi']);
+            Route::post('/create', [ModulController::class, 'createEvaluasi'])->middleware([EnsureisTeacher::class]);
+            Route::patch('/update/{evaluasi_id}', [ModulController::class, 'updateEvaluasi'])->middleware([EnsureisTeacher::class]);
+            Route::delete('/delete/{evaluasi_id}', [ModulController::class, 'deleteEvaluasi'])->middleware([EnsureisTeacher::class]);
         });
 
 
@@ -60,7 +72,14 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
-
+    // studi kasus
+    Route::prefix('studi_kasus')->group(function() {
+        Route::get('/', [StudiKasusController::class, 'index']);
+        Route::get('/show/{id}', [StudiKasusController::class, 'showStudiKasus']);
+        Route::post('/create', [StudiKasusController::class, 'create']);
+        Route::patch('/update/{id}', [StudiKasusController::class, 'update']);
+        Route::delete('/delete/{id}', [StudiKasusController::class, 'delete']);
+    });
 
 
 

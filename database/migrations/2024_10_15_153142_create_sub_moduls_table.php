@@ -1,8 +1,9 @@
 <?php
 
-use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Database\Migrations\Migration;
 
 return new class extends Migration
 {
@@ -17,8 +18,10 @@ return new class extends Migration
             $table->string('type');
             $table->string('judul');
             $table->text('description');
+            $table->datetime('deadline')->nullable();
             $table->string('link_video')->nullable();
             $table->json('files')->nullable(); // menggunakan JSON untuk menyimpan file
+            $table->datetime('time')->nullable()->default(DB::raw('CURRENT_TIMESTAMP'));
             $table->timestamps();
             $table->softDeletes();
 

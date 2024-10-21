@@ -10,7 +10,20 @@ class TaskCollectionController extends Controller
 {
     public function index($modul_id, $submodul_id)
     {
-        $taskCollection = TaskCollection::where('sub_modul_id', $submodul_id)->get();
+        $taskCollection = TaskCollection::where('sub_modul_id', $submodul_id)
+                                        ->with('user:id,name') // Eager load user with only id and name
+                                        ->get();
+
+        return response()->json([
+            'message' => 'Success get data task collection',
+            'data' => $taskCollection
+        ]);
+    }
+    public function show($modul_id, $submodul_id, $user_id)
+    {
+        $taskCollection = TaskCollection::where('sub_modul_id', $submodul_id)
+                                        ->where('user_id', $user_id)
+                                        ->get();
 
         return response()->json([
             'message' => 'Success get data task collection',
@@ -117,9 +130,9 @@ class TaskCollectionController extends Controller
         ], 200);
     }
 
-    public function delete($sub_bmodul_id, $id)
+    public function delete($modul_id, $sub_bmodul_id, $task_id)
     {
-        $taskCollection = TaskCollection::findOrFail($id);
+        $taskCollection = TaskCollection::findOrFail($task_id);
 
         // Decode JSON file paths
         $filePaths = json_decode($taskCollection->files, true) ?? [];

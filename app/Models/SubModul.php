@@ -15,8 +15,10 @@ class SubModul extends Model
         'type',
         'judul',
         'description',
+        'deadline',
         'link_video',
-        'files'
+        'files',
+        'time',
     ];
 
     public function modul()

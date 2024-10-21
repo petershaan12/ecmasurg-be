@@ -12,7 +12,7 @@ class ModulController extends Controller
 {
     public function index()
     {
-        $allModul = Modul::with(['asignd_teacher'])->get();
+        $allModul = Modul::with(['asignd_teacher'])->withCount('submodules')->get();
 
         return response([
             'message' => 'Succesfull get all modul',
@@ -117,6 +117,17 @@ class ModulController extends Controller
 
         return response([
             'message' => 'Succesfull get modul detail',
+            'data' => $modul
+        ], 200);
+    }
+
+    // get modul by id asignd teacher
+    public function getmymodul($id)
+    {
+        $modul = Modul::where('asignd_teacher', $id)->get();
+
+        return response([
+            'message' => 'Succesfull get my modul',
             'data' => $modul
         ], 200);
     }

@@ -27,4 +27,13 @@ class Modul extends Model
         return $this->belongsTo(User::class, 'asignd_teacher', 'id');
     }
 
+    public function submodules()
+    {
+        return $this->hasMany(SubModul::class, 'modul_id', 'id');
+    }
+
+    public function getSubmoduleCountAttribute()
+    {
+        return $this->submodules()->count();
+    }
 }

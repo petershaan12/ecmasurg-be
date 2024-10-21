@@ -26,8 +26,10 @@ class SubModulController extends Controller
             'type' => 'required|string',
             'judul' => 'required|string',
             'description' => 'required|string',
+            'deadline' => 'nullable|date_format:Y-m-d\TH:i',
             'link_video' => 'nullable|string',
             'files.*' => 'nullable|file|mimes:ppt,pptx,pdf,doc,docx,jpg,jpeg,png|max:61440', // Validasi untuk banyak file dengan maksimal 60 MB
+            'time' => 'nullable|date_format:Y-m-d\TH:i',
         ]);
 
         $filePaths = [];
@@ -60,8 +62,10 @@ class SubModulController extends Controller
             'type' => $request->type,
             'judul' => $request->judul,
             'description' => $request->description,
+            'deadline' => $request->deadline,
             'link_video' => $request->link_video,
             'files' => json_encode($filePaths), // Konversi array ke JSON sebelum disimpan
+            'time' => $request->time,
         ]);
 
         return response()->json([
@@ -77,8 +81,11 @@ class SubModulController extends Controller
             'type' => 'required|string',
             'judul' => 'required|string',
             'description' => 'required|string',
+            'deadline' => 'nullable|date_format:Y-m-d\TH:i',
             'link_video' => 'nullable|string',
             'files.*' => 'nullable|file|mimes:ppt,pptx,pdf,doc,docx,jpg,jpeg,png|max:61440', // Validasi untuk banyak file dengan maksimal 60 MB
+            'time' => 'nullable|date_format:Y-m-d\TH:i',
+
         ]);
 
         $subModul = SubModul::findOrFail($id);
@@ -108,8 +115,10 @@ class SubModulController extends Controller
             'type' => $request->type,
             'judul' => $request->judul,
             'description' => $request->description,
+            'deadline' => $request->deadline,
             'link_video' => $request->link_video,
-            'files' => json_encode($filePaths) // Menyimpan path file sebagai JSON
+            'files' => json_encode($filePaths), // Menyimpan path file sebagai JSON
+            'time' => $request->time,
         ]);
 
         return response()->json([
