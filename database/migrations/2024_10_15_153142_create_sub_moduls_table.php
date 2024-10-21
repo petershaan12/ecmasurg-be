@@ -18,9 +18,7 @@ return new class extends Migration
             $table->string('judul');
             $table->text('description');
             $table->string('link_video')->nullable();
-            $table->string('ppt')->nullable();
-            $table->string('pdf')->nullable();
-            $table->string('word')->nullable();
+            $table->json('files')->nullable(); // menggunakan JSON untuk menyimpan file
             $table->timestamps();
             $table->softDeletes();
 

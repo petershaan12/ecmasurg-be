@@ -10,9 +10,9 @@ use Illuminate\Support\Facades\Storage;
 
 class ModulController extends Controller
 {
-    public function read()
+    public function index()
     {
-        $allModul = Modul::with(['assignedTeacher'])->get();
+        $allModul = Modul::with(['asignd_teacher'])->get();
 
         return response([
             'message' => 'Succesfull get all modul',
@@ -113,7 +113,7 @@ class ModulController extends Controller
 
     public function showDetail($id)
     {
-        $modul = Modul::with(['user', 'assignedTeacher'])->findOrFail($id);
+        $modul = Modul::with(['asignd_teacher'])->findOrFail($id);
 
         return response([
             'message' => 'Succesfull get modul detail',

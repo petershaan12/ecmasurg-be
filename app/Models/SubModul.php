@@ -16,9 +16,7 @@ class SubModul extends Model
         'judul',
         'description',
         'link_video',
-        'ppt',
-        'pdf',
-        'word'
+        'files'
     ];
 
     public function modul()

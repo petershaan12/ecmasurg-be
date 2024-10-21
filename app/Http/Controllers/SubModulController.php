@@ -9,9 +9,9 @@ use Illuminate\Support\Facades\Storage;
 
 class SubModulController extends Controller
 {
-    public function read()
+    public function index($modul_id)
     {
-        $submodul = SubModul::all();
+        $submodul = SubModul::where('modul_id', $modul_id)->get();
 
         return response()->json([
             'message' => 'Success get data submodul',
@@ -19,52 +19,49 @@ class SubModulController extends Controller
         ]);
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $modul_id)
     {
         $request->validate([
-            'modul_id' => 'required|exists:moduls,id',
+            // 'modul_id' => 'required|exists:moduls,id',
             'type' => 'required|string',
             'judul' => 'required|string',
             'description' => 'required|string',
             'link_video' => 'nullable|string',
-            'ppt' => 'nullable|file|mimes:ppt,pptx',
-            'pdf' => 'nullable|file|mimes:pdf',
-            'word' => 'nullable|file|mimes:doc,docx',
+            'files.*' => 'nullable|file|mimes:ppt,pptx,pdf,doc,docx,jpg,jpeg,png|max:61440', // Validasi untuk banyak file dengan maksimal 60 MB
         ]);
 
-        $pptPath = null;
-        if ($request->hasFile('ppt')) {
-            $file = $request->file('ppt');
-            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('submodul')->putFileAs('ppt', $file, $newName);
-            $pptPath = $newName;
-        }
+        $filePaths = [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $file->getClientOriginalExtension();
+                $newName = $originalName . '.' . $extension;
 
-        $pdfPath = null;
-        if ($request->hasFile('pdf')) {
-            $file = $request->file('pdf');
-            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('submodul')->putFileAs('pdf', $file, $newName);
-            $pdfPath = $newName;
-        }
+                // Cek apakah file dengan nama yang sama sudah ada
+                while (Storage::disk('public')->exists('files/' . $newName)) {
+                    do {
+                        $newName = $originalName . '_' . rand(100, 999) . '.' . $extension;
+                    } while (Storage::disk('public')->exists('files/' . $newName));
+                }
 
-        $wordPath = null;
-        if ($request->hasFile('word')) {
-            $file = $request->file('word');
-            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('submodul')->putFileAs('word', $file, $newName);
-            $wordPath = $newName;
+                // Simpan file dan tambahkan path ke array
+                $path = Storage::disk('public')->putFileAs('files', $file, $newName);
+                if ($path) {
+                    $filePaths[] = $newName;
+                } else {
+                    // Tambahkan pesan debug jika penyimpanan file gagal
+                    return response()->json(['message' => 'Failed to store file: ' . $newName], 500);
+                }
+            }
         }
 
         $subModul = SubModul::create([
-            'modul_id' => $request->modul_id,
+            'modul_id' => $modul_id,
             'type' => $request->type,
             'judul' => $request->judul,
             'description' => $request->description,
             'link_video' => $request->link_video,
-            'ppt' => $pptPath,
-            'pdf' => $pdfPath,
-            'word' => $wordPath,
+            'files' => json_encode($filePaths), // Konversi array ke JSON sebelum disimpan
         ]);
 
         return response()->json([
@@ -72,90 +69,80 @@ class SubModulController extends Controller
             'data' => $subModul], 201);
     }
 
-    // Display the specified resource.
-    public function show($id)
+    // Update the specified resource in storage.
+    public function update(Request $request,  $modul_id, $id)
     {
+        $request->validate([
+            // 'modul_id' => 'required|exists:moduls,id',
+            'type' => 'required|string',
+            'judul' => 'required|string',
+            'description' => 'required|string',
+            'link_video' => 'nullable|string',
+            'files.*' => 'nullable|file|mimes:ppt,pptx,pdf,doc,docx,jpg,jpeg,png|max:61440', // Validasi untuk banyak file dengan maksimal 60 MB
+        ]);
+
         $subModul = SubModul::findOrFail($id);
+
+        $filePaths = json_decode($subModul->files, true) ?? [];
+        if ($request->hasFile('files')) {
+            foreach ($request->file('files') as $file) {
+                $originalName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
+                $extension = $file->getClientOriginalExtension();
+                $newName = $originalName . '.' . $extension;
+
+                // Cek apakah file dengan nama yang sama sudah ada
+                while (Storage::disk('public')->exists('files/' . $newName)) {
+                    do {
+                        $newName = $originalName . '_' . rand(100, 999) . '.' . $extension;
+                    } while (Storage::disk('public')->exists('files/' . $newName));
+                }
+
+
+                Storage::disk('public')->putFileAs('files', $file, $newName);
+                $filePaths[] = $newName;
+            }
+        }
+
+        $subModul->update([
+            'modul_id' =>$modul_id,
+            'type' => $request->type,
+            'judul' => $request->judul,
+            'description' => $request->description,
+            'link_video' => $request->link_video,
+            'files' => json_encode($filePaths) // Menyimpan path file sebagai JSON
+        ]);
+
+        return response()->json([
+            'message' => 'SubModul updated successfully',
+            'data' => $subModul
+        ]);
+    }
+
+    // Display the specified resource.
+    public function show($modul_id, $submodul_id)
+    {
+        $subModul = SubModul::with(['modul' => function ($query) {
+            $query->select('id', 'judul'); // Mengambil hanya atribut 'judul' dan 'id' untuk join
+        }])->findOrFail($submodul_id);
+
+        // Mengubah struktur data untuk hanya mengembalikan judul dari modul
+        $subModul->modul_judul = $subModul->modul->judul;
+        unset($subModul->modul);
+
         return response()->json([
             'message' => 'Success get data detail submodul',
             'data' => $subModul
         ], 200);
     }
 
-    // Update the specified resource in storage.
-    public function update(Request $request, $id)
-    {
-        $request->validate([
-            'modul_id' => 'required|exists:moduls,id',
-            'type' => 'required|string',
-            'judul' => 'required|string',
-            'description' => 'required|string',
-            'link_video' => 'nullable|string',
-            'ppt' => 'nullable|file|mimes:ppt,pptx',
-            'pdf' => 'nullable|file|mimes:pdf',
-            'word' => 'nullable|file|mimes:doc,docx',
-        ]);
-
-        $subModul = SubModul::findOrFail($id);
-
-        if ($request->hasFile('ppt')) {
-            if ($subModul->ppt) {
-                Storage::disk('submodul')->delete('ppt/' . $subModul->ppt);
-            }
-            $file = $request->file('ppt');
-            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('submodul')->putFileAs('ppt', $file, $newName);
-            $subModul->ppt = $newName;
-        }
-
-        if ($request->hasFile('pdf')) {
-            if ($subModul->pdf) {
-                Storage::disk('submodul')->delete('pdf/' . $subModul->pdf);
-            }
-            $file = $request->file('pdf');
-            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('submodul')->putFileAs('pdf', $file, $newName);
-            $subModul->pdf = $newName;
-        }
-
-        if ($request->hasFile('word')) {
-            if ($subModul->word) {
-                Storage::disk('submodul')->delete('word/' . $subModul->word);
-            }
-            $file = $request->file('word');
-            $newName = Str::uuid() . '.' . $file->getClientOriginalExtension();
-            Storage::disk('submodul')->putFileAs('word', $file, $newName);
-            $subModul->word = $newName;
-        }
-
-        $subModul->update([
-            'modul_id' => $request->modul_id,
-            'type' => $request->type,
-            'judul' => $request->judul,
-            'description' => $request->description,
-            'link_video' => $request->link_video,
-        ]);
-
-        return response()->json([
-            'message' => 'SubModul updated successfully',
-            'data' => $subModul]);
-    }
-
     // Remove the specified resource from storage.
-    public function delete($id)
+    public function delete($modul_id, $id)
     {
         $subModul = SubModul::findOrFail($id);
 
-        if ($subModul->ppt) {
-            Storage::disk('submodul')->delete('ppt/' . $subModul->ppt);
-        }
-
-        if ($subModul->pdf) {
-            Storage::disk('submodul')->delete('pdf/' . $subModul->pdf);
-        }
-
-        if ($subModul->word) {
-            Storage::disk('submodul')->delete('word/' . $subModul->word);
+        $filePaths = json_decode($subModul->files, true) ?? [];
+        foreach ($filePaths as $filePath) {
+            Storage::disk('public')->delete('files/' . $filePath);
         }
 
         $subModul->delete();

@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Storage;
 
 class UserController extends Controller
 {
-    public function me(Request $request)
+    public function index(Request $request)
     {
         $user = Auth::user(); // Using the Auth facade
 

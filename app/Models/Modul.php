@@ -22,7 +22,7 @@ class Modul extends Model
         return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
-    public function assignedTeacher()
+    public function asignd_teacher()
     {
         return $this->belongsTo(User::class, 'asignd_teacher', 'id');
     }
