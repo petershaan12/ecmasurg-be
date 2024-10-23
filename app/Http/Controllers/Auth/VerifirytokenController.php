@@ -17,14 +17,14 @@ class VerifirytokenController extends Controller
     {
         $token = $request->bearerToken();
 
-                // Check if the token is valid
-                if (!$token || !Auth::guard('sanctum')->check()) {
-                    return response()->json(['error' => 'Unauthorized'], 401);
-                }
+        // Check if the token is valid
+        if (!$token || !Auth::guard('sanctum')->check()) {
+            return response()->json(['error' => 'Unauthorized'], 401);
+        }
 
-                // If valid, return user details or a success message
-                return response()->json([
-                    'message' => 'Token is valid', 'user' => Auth::user()
-                ], 200);
+        // If valid, return user details or a success message
+        return response()->json([
+            'message' => 'Token is valid', 'user' => Auth::user()
+        ], 200);
     }
 }

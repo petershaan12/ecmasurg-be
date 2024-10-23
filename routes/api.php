@@ -73,12 +73,26 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
     // studi kasus
-    Route::prefix('studi_kasus')->group(function() {
+    Route::prefix('studikasus')->group(function() {
         Route::get('/', [StudiKasusController::class, 'index']);
         Route::get('/show/{id}', [StudiKasusController::class, 'showStudiKasus']);
         Route::post('/create', [StudiKasusController::class, 'create']);
         Route::patch('/update/{id}', [StudiKasusController::class, 'update']);
         Route::delete('/delete/{id}', [StudiKasusController::class, 'delete']);
+
+        // comment
+        Route::prefix('comment')->group(function() {
+            Route::post('/create', [StudiKasusController::class, 'createComment']);
+            Route::patch('/update/{comment_id}', [StudiKasusController::class, 'updateComment']);
+            Route::delete('/delete/{comment_id}', [StudiKasusController::class, 'deleteComment']);
+        });
+
+        // like
+        Route::prefix('like')->group(function() {
+            Route::get('/', [StudiKasusController::class, 'index']);
+            Route::post('/create', [StudiKasusController::class, 'createLike']);
+            Route::delete('/delete/{like_id}', [StudiKasusController::class, 'deleteLike']);
+        });
     });
 
 

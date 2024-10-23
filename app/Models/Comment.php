@@ -6,14 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Laravel\Sanctum\HasApiTokens;
 
-class StudiKasus extends Model
+class Comment extends Model
 {
     use HasApiTokens, HasFactory;
 
     protected $fillable = [
+        'studi_kasus_id',
         'user_id',
-        'description',
-        'photo_kasus',
+        'comment',
     ];
 
     public function user()
@@ -21,13 +21,8 @@ class StudiKasus extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function comments()
+    public function studi_kasus()
     {
-        return $this->hasMany(Comment::class);
-    }
-
-    public function likes()
-    {
-        return $this->hasMany(Like::class);
+        return $this->belongsTo(StudiKasus::class);
     }
 }
