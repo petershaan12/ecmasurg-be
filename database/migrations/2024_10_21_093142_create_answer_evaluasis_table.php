@@ -14,7 +14,6 @@ return new class extends Migration
         Schema::create('answer_evaluasis', function (Blueprint $table) {
             $table->id();
             $table->foreignId('evaluasi_id')->constrained('evaluasis')->onDelete('cascade');
-            $table->foreignId('question_evaluasi_id')->constrained('question_evaluasis')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->text('answer'); // jawaban dari user
             $table->timestamps();
