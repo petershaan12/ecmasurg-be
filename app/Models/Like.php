@@ -12,11 +12,15 @@ class Like extends Model
 
     protected $fillable = [
         'studi_kasus_id',
-        'like',
+        'user_id',
     ];
 
     public function studi_kasus()
     {
         return $this->belongsTo(StudiKasus::class);
+    }
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 }

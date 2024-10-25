@@ -17,6 +17,7 @@ class StudiKasusController extends Controller
         $studiKasus = StudiKasus::with(['user' => function($query) {
             $query->select('id', 'name', 'roles', 'photo_profile');
         }])
+        ->withCount('comments')
         ->withCount('likes')
         ->paginate(10);
 
@@ -99,10 +100,16 @@ class StudiKasusController extends Controller
     {
         $studiKasus = StudiKasus::with([
             'user' => function($query) {
-                $query->select('id', 'name', 'roles', 'photo_profile');
+            $query->select('id', 'name', 'roles', 'photo_profile');
             },
-            'comments.user'
+            'comments.user' => function($query) {
+            $query->select('id', 'name');
+            },
+            'comments' => function($query) {
+            $query->select('id', 'studi_kasus_id', 'user_id', 'comment', 'created_at');
+            }
         ])
+        ->withCount('comments')
         ->withCount('likes')
         ->findOrFail($id);
 

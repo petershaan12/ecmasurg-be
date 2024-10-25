@@ -14,8 +14,9 @@ return new class extends Migration
         Schema::create('likes', function (Blueprint $table) {
             $table->id();
             $table->foreignId('studi_kasus_id')->constrained('studi_kasuses')->onDelete('cascade');
-            $table->bigIncrements('like');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

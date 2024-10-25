@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\Modul;
 use Illuminate\Support\Str;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
 
 class ModulController extends Controller
@@ -130,5 +131,28 @@ class ModulController extends Controller
             'message' => 'Succesfull get my modul',
             'data' => $modul
         ], 200);
+    }
+
+    public function isowner($id)
+    {
+        $user = Auth::user();
+
+        $modul = Modul::find($id);
+
+        if (!$modul) {
+            return response()->json(['error' => 'Modul not found'], 404);
+        }
+
+        // Cek apakah pengguna yang login adalah pemilik modul
+        if ($user->id === $modul->owner_id) {
+            return response()->json([
+                'isOwner' => true
+            ], 200);
+        }
+
+        return response()->json([
+            'isOwner' => false
+        ], 403);
+
     }
 }

@@ -14,11 +14,19 @@ class Evaluasi extends Model
     protected $fillable = [
         'modul_id',
         'title',
-        'description'
+        'question1',
+        'type1',
+        'question2',
+        'type2',
+        'question3',
+        'type3',
+        'question4',
+        'type4',
+        'question5',
+        'type5',
+        'deadline',
+        'time'
     ];
 
-    public function questions()
-    {
-        return $this->hasMany(QuestionEvaluasi::class, 'evaluasi_id');
-    }
+
 }
