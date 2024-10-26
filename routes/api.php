@@ -23,6 +23,8 @@ Route::get('/verifytoken', VerifirytokenController::class)->middleware('auth:san
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::get('/dashboard', [ModulController::class, 'dashboard']);
+
     // profile
     Route::prefix('profile')->group(function () {
         Route::get('/', [UserController::class, 'index']);
@@ -65,10 +67,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
         // evaluasi
         Route::prefix('evaluasi/{modul_id}')->group(function () {
             Route::get('/', [EvaluasiController::class, 'index']);
-            Route::get('/show/{evaluasi_id}', [EvaluasiController::class, 'showEvaluasi']);
-            Route::post('/create', [EvaluasiController::class, 'createEvaluasi'])->middleware([EnsureisTeacher::class]);
-            Route::patch('/update/{evaluasi_id}', [EvaluasiController::class, 'updateEvaluasi'])->middleware([EnsureisTeacher::class]);
-            Route::delete('/delete/{evaluasi_id}', [EvaluasiController::class, 'deleteEvaluasi'])->middleware([EnsureisTeacher::class]);
+            Route::get('/show/{evaluasi_id}', [EvaluasiController::class, 'show']);
+            Route::post('/create', [EvaluasiController::class, 'create'])->middleware([EnsureisTeacher::class]);
+            Route::patch('/update/{evaluasi_id}', [EvaluasiController::class, 'update'])->middleware([EnsureisTeacher::class]);
+            Route::delete('/delete/{evaluasi_id}', [EvaluasiController::class, 'delete'])->middleware([EnsureisTeacher::class]);
         });
     });
 

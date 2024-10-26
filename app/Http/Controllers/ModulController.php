@@ -13,7 +13,13 @@ class ModulController extends Controller
 {
     public function index()
     {
-        $allModul = Modul::with(['asignd_teacher'])->withCount('submodules')->get();
+        $allModul = Modul::with(['asignd_teacher'])->withCount('submodules')->withCount('evaluasis')->get();
+
+        $allModul = $allModul->map(function ($modul) {
+            $modul->total_count = $modul->submodules_count + $modul->evaluasis_count;
+            $modul->judul = $modul->judul;
+            return $modul;
+        });
 
         return response([
             'message' => 'Succesfull get all modul',
@@ -144,7 +150,7 @@ class ModulController extends Controller
         }
 
         // Cek apakah pengguna yang login adalah pemilik modul
-        if ($user->id === $modul->owner_id) {
+        if ($user->id === $modul->asignd_teacher) {
             return response()->json([
                 'isOwner' => true
             ], 200);
@@ -152,7 +158,7 @@ class ModulController extends Controller
 
         return response()->json([
             'isOwner' => false
-        ], 403);
+        ], 200);
 
     }
 }

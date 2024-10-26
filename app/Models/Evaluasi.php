@@ -28,5 +28,10 @@ class Evaluasi extends Model
         'time'
     ];
 
+    public function modul()
+    {
+        return $this->belongsTo(Modul::class);
+    }
+
 
 }

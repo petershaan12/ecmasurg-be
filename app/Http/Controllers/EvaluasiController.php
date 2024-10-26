@@ -7,9 +7,9 @@ use Illuminate\Http\Request;
 
 class EvaluasiController extends Controller
 {
-    public function index()
+    public function index($modul_id)
     {
-        $evaluasi = Evaluasi::get();
+        $evaluasi = Evaluasi::where('modul_id', $modul_id)->get(['id', 'title', 'time']);
 
         return response()->json([
             'message' => 'success',
@@ -17,9 +17,14 @@ class EvaluasiController extends Controller
         ]);
     }
 
-    public function show($id)
+    public function show($modul_id, $id)
     {
-        $evaluasi = Evaluasi::findOrFail($id);
+        $evaluasi = Evaluasi::with(['modul' => function($query) {
+            $query->select('id', 'asignd_teacher'); // Memilih kolom 'id' dan 'asignd_teacher'
+        }])
+        ->where('modul_id', $modul_id)
+        ->where('id', $id)
+        ->firstOrFail();
 
         return response()->json([
             'message' => 'success',
@@ -27,10 +32,9 @@ class EvaluasiController extends Controller
         ]);
     }
 
-    public function create(Request $request)
+    public function create(Request $request, $modul_id)
     {
         $validatedData = $request->validate([
-            'modul_id' => 'required|exists:moduls,id',
             'title' => 'required|string|max:255',
             'question1' => 'required|string|max:255',
             'type1' => 'required|string|max:255',
@@ -43,8 +47,10 @@ class EvaluasiController extends Controller
             'question5' => 'nullable|string|max:255',
             'type5' => 'nullable|string|max:255',
             'deadline' => 'required|date',
-            'time' => 'requied|date',
+            'time' => 'required|date',
         ]);
+
+        $validatedData['modul_id'] = $modul_id;
 
         $evaluasi = Evaluasi::create($validatedData);
 
@@ -54,12 +60,11 @@ class EvaluasiController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, $modul_id, $id)
     {
         $evaluasi = Evaluasi::findOrFail($id);
 
         $validatedData = $request->validate([
-            'modul_id' => 'required|exists:moduls,id',
             'title' => 'required|string|max:255',
             'question1' => 'required|string|max:255',
             'type1' => 'required|string|max:255',
@@ -72,8 +77,10 @@ class EvaluasiController extends Controller
             'question5' => 'nullable|string|max:255',
             'type5' => 'nullable|string|max:255',
             'deadline' => 'required|date',
-            'time' => 'requied|date',
+            'time' => 'required|date',
         ]);
+
+        $validatedData['modul_id'] = $modul_id;
 
         $evaluasi->update($validatedData);
 
@@ -83,7 +90,7 @@ class EvaluasiController extends Controller
         ], 200);
     }
 
-    public function delete($id)
+    public function delete($modul_id, $id)
     {
         $evaluasi = Evaluasi::findOrFail($id);
 

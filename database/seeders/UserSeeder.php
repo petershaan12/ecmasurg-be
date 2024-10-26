@@ -23,9 +23,14 @@ class UserSeeder extends Seeder
             ],
             [
                 'name' => 'Evelyn H. Tambunan, Ph.D NED',
-                'email' => 'evelyn@gmail.com',
+                'email' => 'evelyne@gmail.com',
                 'password' => Hash::make('emsaec123'),
                 'roles' => 'teacher',
+            ],
+            [
+                'name' => 'Jonatan S',
+                'email' => 'jonatan@gmail.com',
+                'password' => Hash::make('jonatans123'),
             ]
         ]);
     }

@@ -31,7 +31,10 @@ class Modul extends Model
     {
         return $this->hasMany(SubModul::class, 'modul_id', 'id');
     }
-
+    public function evaluasis()
+    {
+        return $this->hasMany(Evaluasi::class, 'modul_id', 'id');
+    }
     public function getSubmoduleCountAttribute()
     {
         return $this->submodules()->count();
