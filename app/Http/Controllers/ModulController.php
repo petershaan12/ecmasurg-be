@@ -150,7 +150,7 @@ class ModulController extends Controller
         }
 
         // Cek apakah pengguna yang login adalah pemilik modul
-        if ($user->id === $modul->asignd_teacher) {
+        if ($user->id == $modul->asignd_teacher) {
             return response()->json([
                 'isOwner' => true
             ], 200);
@@ -158,8 +158,6 @@ class ModulController extends Controller
 
         return response()->json([
             'isOwner' => false,
-            'id_asign_teacher' => $modul->asignd_teacher,
-            'id_user' => $user->id
         ], 200);
 
     }
