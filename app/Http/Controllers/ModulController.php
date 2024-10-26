@@ -157,7 +157,9 @@ class ModulController extends Controller
         }
 
         return response()->json([
-            'isOwner' => false
+            'isOwner' => false,
+            'id_asign_teacher' => $modul->asignd_teacher,
+            'id_user' => $user->id
         ], 200);
 
     }
