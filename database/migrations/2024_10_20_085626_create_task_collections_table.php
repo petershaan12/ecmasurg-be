@@ -16,6 +16,9 @@ return new class extends Migration
             $table->unsignedBigInteger('sub_modul_id');
             $table->unsignedBigInteger('user_id');
             $table->json('files')->nullable();
+            $table->boolean('submited')->nullable();
+            $table->integer('grade')->nullable();
+            $table->string('feedback')->nullable();
             $table->timestamps();
             $table->softDeletes();
 

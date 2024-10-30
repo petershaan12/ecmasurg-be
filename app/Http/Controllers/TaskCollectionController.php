@@ -36,7 +36,7 @@ class TaskCollectionController extends Controller
         $request->validate([
             'user_id' => 'required|exists:users,id',
             'files' => 'required|array|max:5', // Validasi untuk maksimal 5 file
-            'files.*' => 'required|file|mimes:ppt,pptx,pdf,doc,docx,jpg,jpeg,png|max:61440', // Validasi untuk banyak file dengan maksimal 60 MB
+            'files.*' => 'required|file|mimes:ppt,pptx,pdf,doc,docx,jpg,jpeg,png|max:61440', // Validasi untuk banyak file dengan maksimal 60
         ]);
 
         $filePaths = [];
@@ -67,7 +67,8 @@ class TaskCollectionController extends Controller
         $taskCollection = TaskCollection::create([
             'sub_modul_id' => $sub_bmodul_id,
             'user_id' => $request->user_id,
-            'files' => json_encode($filePaths), // Simpan array file paths sebagai JSON
+            'files' => json_encode($filePaths), // Simpan array file paths sebagai
+            'submited' => true,
         ]);
 
         return response()->json([
@@ -146,5 +147,51 @@ class TaskCollectionController extends Controller
         $taskCollection->delete();
 
         return response()->json(['message' => 'Task collection deleted successfully']);
+    }
+
+    public function grade(Request $request, $task_id)
+    {
+        $request->validate([
+            'grade' => 'required|integer|min:0|max:100',
+            'feedback' => 'nullable|string',
+        ]);
+
+        $taskCollection = TaskCollection::find($task_id);
+
+        if (!$taskCollection) {
+            return response()->json(['message' => 'Task collection not found'], 404);
+        }
+
+        $taskCollection->update([
+            'grade' => $request->grade,
+            'feedback' => $request->feedback,
+        ]);
+
+        return response()->json([
+            'message' => 'Task collection graded successfully',
+            'data' => $taskCollection
+        ]);
+    }
+
+    public function submited(Request $request, $modul_id , $submodul_id, $task_id)
+    {
+        $request->validate([
+            'subbmited' => 'required|boolean',
+        ]);
+
+        $taskCollection = TaskCollection::find($task_id);
+
+        if (!$taskCollection) {
+            return response()->json(['message' => 'Task collection not found'], 404);
+        }
+
+        $taskCollection->update([
+            'subbmited' => $request->subbmited,
+        ]);
+
+        return response()->json([
+            'message' => 'Task collection subbmited status updated successfully',
+            'data' => $taskCollection
+        ]);
     }
 }

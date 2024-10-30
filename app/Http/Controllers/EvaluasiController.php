@@ -20,7 +20,7 @@ class EvaluasiController extends Controller
     public function show($modul_id, $id)
     {
         $evaluasi = Evaluasi::with(['modul' => function($query) {
-            $query->select('id', 'asignd_teacher'); // Memilih kolom 'id' dan 'asignd_teacher'
+            $query->select('id', 'asignd_teacher', 'judul'); // Memilih kolom 'id' dan 'asignd_teacher'
         }])
         ->where('modul_id', $modul_id)
         ->where('id', $id)

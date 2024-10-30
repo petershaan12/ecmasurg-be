@@ -11,15 +11,14 @@ class AnswerEvaluasi extends Model
     use HasApiTokens, HasFactory;
 
     protected $fillable = [
-        'question_evaluasi_id',
-        'answer',
-        'is_correct'
+        'evaluasi_id',
+        'user_id',
+        'answer1',
+        'answer2',
+        'answer3',
+        'answer4',
+        'answer5',
     ];
-
-    public function question()
-    {
-        return $this->belongsTo(QuestionEvaluasi::class, 'question_evaluasi_id');
-    }
 
     public function user()
     {

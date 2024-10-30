@@ -13,7 +13,10 @@ class TaskCollection extends Model
     protected $fillable = [
         'sub_modul_id',
         'user_id',
-        'files'
+        'files',
+        'submited',
+        'grade',
+        'feedback'
     ];
 
     public function subModul()

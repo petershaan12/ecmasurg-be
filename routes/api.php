@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AnswerEvaluasiController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -44,8 +45,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::delete('/delete/{id}', [ModulController::class, 'delete'])->middleware([EnsureisTeacher::class]);
         Route::get('/show/{id}', [ModulController::class, 'showDetail']);
 
-        // get judul modul
-
         // sub modul
         Route::prefix('{modul_id}')->group(function () {
             Route::get('/', [SubModulController::class, 'index']);
@@ -59,8 +58,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
                 Route::get('/', [TaskCollectionController::class, 'index']);
                 Route::get('/show/{user_id}', [TaskCollectionController::class, 'show']);
                 Route::post('/create', [TaskCollectionController::class, 'create']);
+                Route::patch('/submit/{task_id}', [TaskCollectionController::class, 'submited']);
                 Route::patch('/update/{task_id}', [TaskCollectionController::class, 'update']);
                 Route::delete('/delete/{task_id}', [TaskCollectionController::class, 'delete']);
+
             });
         });
 
@@ -72,8 +73,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
             Route::patch('/update/{evaluasi_id}', [EvaluasiController::class, 'update'])->middleware([EnsureisTeacher::class]);
             Route::delete('/delete/{evaluasi_id}', [EvaluasiController::class, 'delete'])->middleware([EnsureisTeacher::class]);
         });
+
+        // grade task collection
+        Route::post('gradetask/{task_id}', [TaskCollectionController::class, 'grade'])->middleware([EnsureisTeacher::class]);
+
     });
 
+    // answer evaluasi
+    Route::prefix('answerevaluasi/{evaluasi_id}')->group(function () {
+        Route::get('/', [AnswerEvaluasiController::class, 'index']);
+        Route::post('/', [AnswerEvaluasiController::class, 'create']);
+        Route::delete('/delete/{answer_id}', [AnswerEvaluasiController::class, 'delete']);
+    });
 
     // studi kasus
     Route::prefix('studikasus')->group(function () {

@@ -20,18 +20,24 @@ class UserSeeder extends Seeder
                 'email' => 'jody@gmail.com',
                 'password' => Hash::make('jodyritonga123'),
                 'roles' => 'teacher',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Evelyn H. Tambunan, Ph.D NED',
                 'email' => 'evelyne@gmail.com',
                 'password' => Hash::make('emsaec123'),
                 'roles' => 'teacher',
+                'created_at' => now(),
+                'updated_at' => now(),
             ],
             [
                 'name' => 'Jonatan S',
                 'email' => 'jonatan@gmail.com',
-                'password' => Hash::make('jonatans123'),
+                'password' => Hash::make('jonatan123'),
                 'roles' => 'user',
+                'created_at' => now(),
+                'updated_at' => now(),
             ]
         ]);
     }

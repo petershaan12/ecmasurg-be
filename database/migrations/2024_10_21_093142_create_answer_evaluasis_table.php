@@ -15,8 +15,13 @@ return new class extends Migration
             $table->id();
             $table->foreignId('evaluasi_id')->constrained('evaluasis')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
-            $table->text('answer'); // jawaban dari user
+            $table->text('answer1')->nullable(); // jawaban dari user
+            $table->text('answer2')->nullable(); // jawaban dari user
+            $table->text('answer3')->nullable(); // jawaban dari user
+            $table->text('answer4')->nullable(); // jawaban dari user
+            $table->text('answer5')->nullable(); // jawaban dari user
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
