@@ -29,7 +29,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/dashboard', [ModulController::class, 'dashboard']);
     Route::get('/quiz/{category}', [QuizController::class, 'getQuestion']);
     Route::post('/quiz/update-points', [QuizController::class, 'updatePointQuiz'])->middleware('auth:sanctum');
-    Route::get('/check-status-quiz/', [QuizController::class, 'startQuiz'])->middleware('auth:sanctum');
+    Route::get('/check-status-quiz', [QuizController::class, 'startQuiz'])->middleware('auth:sanctum');
 
 
     // profile
@@ -115,6 +115,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
-    
+
 
 });
