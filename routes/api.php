@@ -16,6 +16,8 @@ use App\Http\Controllers\CommentController;
 use App\Http\Controllers\EvaluasiController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\StudiKasusController;
+use App\Http\Controllers\QuizController;
+
 
 Route::post('/register', RegisterController::class);
 Route::post('/login', LoginController::class);
@@ -25,6 +27,10 @@ Route::get('/verifytoken', VerifirytokenController::class)->middleware('auth:san
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/dashboard', [ModulController::class, 'dashboard']);
+    Route::get('/quiz/{category}', [QuizController::class, 'getQuestion']);
+    Route::post('/quiz/update-points', [QuizController::class, 'updatePointQuiz'])->middleware('auth:sanctum');
+    Route::get('/check-status-quiz/', [QuizController::class, 'startQuiz'])->middleware('auth:sanctum');
+
 
     // profile
     Route::prefix('profile')->group(function () {
@@ -107,4 +113,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         Route::get('/', [LikeController::class, 'index']);
         Route::post('/', [LikeController::class, 'create']);
     });
+
+
+    
+
 });
