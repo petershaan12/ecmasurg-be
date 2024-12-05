@@ -19,6 +19,7 @@ use App\Http\Controllers\EvaluasiController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\StudiKasusController;
 use App\Http\Controllers\QuizController;
+use App\Http\Controllers\UserQuizController;
 
 
 Route::post('/register', RegisterController::class);
@@ -120,6 +121,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     //trophy
     Route::prefix('trophy')->group(function () {
         Route::get('/', [TrophyController::class, 'index']);
+    });
+
+    Route::prefix('users_quizzes')->group(function () {
+        Route::get('/', [UserQuizController::class, 'index']);
+        Route::post('/create', [UserQuizController::class, 'create']);
     });
 
 });

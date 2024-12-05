@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Quiz;
 use App\Models\User;
+use App\Models\UserQuiz;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -34,6 +35,11 @@ class QuizController extends Controller
                     'last_quiz_taken_at' => Carbon::now()
                 ]);
 
+            UserQuiz::create([
+                'user_id' => $user->id,
+                'point' => $points, // Save the points awarded in this quiz attempt
+            ]);
+
             return response()->json(['message' => 'Points updated successfully']);
         }
 
@@ -61,7 +67,7 @@ class QuizController extends Controller
                     'last_quiz_taken_at' => $lastQuizTakenAt,
                     "last_quiz_taken_at_carbon" => Carbon::parse($lastQuizTakenAt),
                     "7Days" => $quizAvailableAfter,
-                ], 200); 
+                ], 200);
             }
         }
         return response()->json([
