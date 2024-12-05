@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AnswerEvaluasiController;
+use App\Http\Controllers\TrophyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
@@ -13,6 +14,7 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\TaskCollectionController;
 use App\Http\Controllers\Auth\VerifirytokenController;
 use App\Http\Controllers\CommentController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EvaluasiController;
 use App\Http\Controllers\LikeController;
 use App\Http\Controllers\StudiKasusController;
@@ -26,7 +28,7 @@ Route::get('/verifytoken', VerifirytokenController::class)->middleware('auth:san
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
-    Route::get('/dashboard', [ModulController::class, 'dashboard']);
+    Route::get('/dashboard', [DashboardController::class, 'index']);
     Route::get('/quiz/{category}', [QuizController::class, 'getQuestion']);
     Route::post('/quiz/update-points', [QuizController::class, 'updatePointQuiz'])->middleware('auth:sanctum');
     Route::get('/check-status-quiz', [QuizController::class, 'startQuiz'])->middleware('auth:sanctum');
@@ -115,6 +117,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     });
 
 
-
+    //trophy
+    Route::prefix('trophy')->group(function () {
+        Route::get('/', [TrophyController::class, 'index']);
+    });
 
 });

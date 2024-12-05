@@ -15,7 +15,7 @@ class QuizController extends Controller
     {
         $questions = Quiz::where('category', $category)
             ->inRandomOrder()
-            ->limit(10)
+            ->limit(5)
             ->get();
 
         return response()->json(['questions' => $questions]);
@@ -53,11 +53,21 @@ class QuizController extends Controller
         if ($lastQuizTakenAt) {
             $lastQuizDate = Carbon::parse($lastQuizTakenAt);
 
-            // Cek apakah kuis terakhir diambil dalam minggu ini
-            if ($lastQuizDate->greaterThanOrEqualTo(Carbon::now()->startOfWeek()) && $lastQuizDate->lessThanOrEqualTo(Carbon::now()->endOfWeek())) {
-                return response()->json(['canStart' => false], 200);
+            $quizAvailableAfter = $lastQuizDate->addDays(7);
+
+            if (Carbon::now()->lessThanOrEqualTo($quizAvailableAfter)) {
+                return response()->json([
+                    'canStart' => false,
+                    'last_quiz_taken_at' => $lastQuizTakenAt,
+                    "last_quiz_taken_at_carbon" => Carbon::parse($lastQuizTakenAt),
+                    "7Days" => $quizAvailableAfter,
+                ], 200); 
             }
         }
-        return response()->json(['canStart' => true], 200);
+        return response()->json([
+            'canStart' => true,
+            'now' => Carbon::now(),
+            'last_quiz_taken_at' => $lastQuizTakenAt
+        ], 200);
     }
 }
