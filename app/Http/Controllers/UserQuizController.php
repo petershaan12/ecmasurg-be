@@ -29,7 +29,10 @@ class UserQuizController extends Controller
         }
 
         if ($request->has('all') && $request->all === 'all') {
-            $users = User::select('name', 'email', 'point')->orderBy('point', 'desc')->get();
+            $users = User::select('name', 'email', 'point')
+                ->where('roles', 'user')
+                ->orderBy('point', 'desc')
+                ->get();
 
             if($users->isEmpty()) {
                 return response()->json([
@@ -44,7 +47,11 @@ class UserQuizController extends Controller
             ], 200);
         } else {
             $userQuizzes = UserQuiz::with('user')  // Eager load the 'user' relationship
-            ->whereBetween('created_at', [$validated['startDate'], $validated['endDate']])
+                ->whereHas('user', function ($query) {  // Filter based on 'roles' in the 'user' relationship
+                    $query->where('roles', 'user');
+                })
+                ->whereBetween('created_at', [$validated['startDate'], $validated['endDate']])
+                ->orderBy('point', 'desc')  // Order by 'point' in descending order
                 ->get();
 
             if ($userQuizzes->isEmpty()) {
@@ -70,6 +77,31 @@ class UserQuizController extends Controller
                 'data' => $userQuizzesWithNames
             ], 200);
         }
+
     }
 
+    public function show($id){
+        $userQuiz = UserQuiz::with([
+            'quiz1', 'quiz2', 'quiz3', 'quiz4', 'quiz5', 'user'
+        ])  // Eager load questions dan user
+        ->find($id);  
+
+        if (!$userQuiz) {
+            return response()->json(['error' => 'UserQuiz not found'], 404); 
+        }
+
+        return response()->json($userQuiz); 
+    }
+
+    public function delete($id){
+        $userQuiz = UserQuiz::find($id); 
+
+        if (!$userQuiz) {
+            return response()->json(['error' => 'Submission not found'], 404); 
+        }
+
+        $userQuiz->delete(); 
+
+        return response()->json(['message' => 'Submission deleted successfully']);
+    }
 }

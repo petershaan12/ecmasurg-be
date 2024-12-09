@@ -25,7 +25,14 @@ class QuizController extends Controller
     public function updatePointQuiz(Request $request)
     {
         $user = Auth::user(); // Using the Auth facade
-        $points = $request->input('points'); // Mendapatkan poin yang dikirimkan dari request
+        $points = $request->input('points'); 
+        $questionIds = $request->input('questionIds'); 
+        $answers = $request->input('answers');
+
+        // Pastikan semua data valid
+        if (!$questionIds || !$answers || count($questionIds) != 5 || count($answers) != 5) {
+            return response()->json(['error' => 'Invalid data provided'], 400);
+        }
 
         if ($user) {
             DB::table('users')
@@ -38,9 +45,19 @@ class QuizController extends Controller
             UserQuiz::create([
                 'user_id' => $user->id,
                 'point' => $points, // Save the points awarded in this quiz attempt
+                'question_id_1' => $questionIds[0],
+                'question_id_2' => $questionIds[1],
+                'question_id_3' => $questionIds[2],
+                'question_id_4' => $questionIds[3],
+                'question_id_5' => $questionIds[4],
+                'answer_1' => $answers[0],
+                'answer_2' => $answers[1],
+                'answer_3' => $answers[2],
+                'answer_4' => $answers[3],
+                'answer_5' => $answers[4],
             ]);
 
-            return response()->json(['message' => 'Points updated successfully']);
+            return response()->json(['message' => 'Points and Quiz updated successfully']);
         }
 
         return response()->json(['error' => 'User not authenticated'], 401);
