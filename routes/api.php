@@ -34,7 +34,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/quiz/update-points', [QuizController::class, 'updatePointQuiz'])->middleware('auth:sanctum');
     Route::get('/check-status-quiz', [QuizController::class, 'startQuiz'])->middleware('auth:sanctum');
 
-
     // profile
     Route::prefix('profile')->group(function () {
         Route::get('/', [UserController::class, 'index']);
@@ -125,7 +124,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::prefix('users_quizzes')->group(function () {
         Route::get('/', [UserQuizController::class, 'index']);
+        Route::get('/{id}', [UserQuizController::class, 'show']);
         Route::post('/create', [UserQuizController::class, 'create']);
+        Route::delete('/delete/{id}', [UserQuizController::class, 'delete']);
     });
 
 });

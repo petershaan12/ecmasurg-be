@@ -16,17 +16,22 @@ class DashboardController extends Controller
             return response()->json(['error' => 'User not authenticated'], 401);
         }
         
-        //All Modul
+        // All Modul
         $countModul = Modul::count();
 
-        $usersSortedByPoints = User::orderBy('point', 'desc')->get();
-        $rank = $usersSortedByPoints->search(function ($userInList) use ($user) {
-            return $userInList->id === $user->id;
-        }) + 1;
+        $rank = '-'; // Default rank for teachers
+        if ($user->roles !== 'teacher') {
+            $usersSortedByPoints = User::orderBy('point', 'desc')->get();
+            $rank = $usersSortedByPoints->search(function ($userInList) use ($user) {
+                return $userInList->id === $user->id;
+            }) + 1;
+        }
 
         return response()->json([
             'modul' => $countModul,
             'rank' => $rank,
         ]);
     }
+
+    
 }
